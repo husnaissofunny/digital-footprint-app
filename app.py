@@ -289,21 +289,21 @@ Google Maps Link : {f"https://www.google.com/maps?q={lat},{lon}" if (lat and lon
                 mime="text/plain"
             )
 
-    # SECTION 4: STEP-BY-STEP REMOVAL GUIDE
+      # SECTION 4: STEP-BY-STEP REMOVAL GUIDE
     st.markdown("---")
     st.subheader("🛠️ How to Remove & Clean Metadata From Your Images")
     st.write("Follow these steps to scrub hidden metadata so you can post your photos safely:")
 
     with st.expander("📱 iPhone / iPad (iOS)"):
         st.markdown("""
-        * **When Sharing:** Tap the photo $\rightarrow$ tap **Share** $\rightarrow$ tap **Options** at the top $\rightarrow$ toggle **Location OFF**.
-        * **Remove from Device:** Open the photo $\rightarrow$ swipe up (or tap **ℹ️ Info**) $\rightarrow$ tap **Adjust** under the map $\rightarrow$ select **No Location**.
+        * **When Sharing:** Tap the photo → tap **Share** → tap **Options** at the top → toggle **Location OFF**.
+        * **Remove from Device:** Open the photo → swipe up (or tap **ℹ️ Info**) → tap **Adjust** under the map → select **No Location**.
         """)
 
     with st.expander("🤖 Android Phones"):
         st.markdown("""
-        * **Prevent Future Photos:** Open **Camera App** $\rightarrow$ tap **Settings (Gear Icon)** $\rightarrow$ turn **Location Tags / Save Location OFF**.
-        * **Remove Existing Location:** Open **Google Photos** or **Gallery** $\rightarrow$ select photo $\rightarrow$ swipe up $\rightarrow$ tap **Remove Location** before sharing.
+        * **Prevent Future Photos:** Open **Camera App** → tap **Settings (Gear Icon)** → turn **Location Tags / Save Location OFF**.
+        * **Remove Existing Location:** Open **Google Photos** or **Gallery** → select photo → swipe up → tap **Remove Location** before sharing.
         """)
 
     with st.expander("💻 Windows PC"):
@@ -326,6 +326,7 @@ Google Maps Link : {f"https://www.google.com/maps?q={lat},{lon}" if (lat and lon
         st.markdown("""
         Open the image on your phone or laptop screen and **take a screenshot**. The screenshot creates a brand-new image file that contains **zero camera, GPS, or hardware metadata**.
         """)
+
 
 
 # MODULE 5: Hardening Checklist
