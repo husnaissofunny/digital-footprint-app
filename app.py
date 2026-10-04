@@ -176,7 +176,7 @@ with tab6:
     st.progress(final_score)
     st.write(f"**Calculated Exposure Index:** {final_score} / 100")
     
-    report_text = f"DIGITAL FOOTPRINT ASSESSMENT REPORT\nGenerated: {datetime.datetime.now().strftime('%Y-%m-%d')}\nRisk Index: {final_score}/100"
+    report_text = f"DIGITAL FOOTPRINT ASSESSMENT REPORT\nGenerated: {datetime.now().strftime('%Y-%m-%d')}\nRisk Index: {final_score}/100"
     st.download_button("📥 Download Official Audit Summary (.txt)", data=report_text, file_name="footprint_audit_report.txt")
 # MODULE 7: Cyber Incident Action Plan & Evidence Report Generator
 with tab7:
