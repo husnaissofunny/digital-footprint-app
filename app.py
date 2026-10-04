@@ -33,7 +33,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📸 4. Live EXIF Metadata Inspector",
     "📋 5. Hardening Checklist",
     "📊 6. Audit & Scenario Quiz",
-    "🚨 7. Incident Reporting & Helplines"
+    "🚨 7. Action Plan & Evidence Generator"
 ])
 
 # MODULE 1: Active vs Passive
@@ -178,34 +178,120 @@ with tab6:
     
     report_text = f"DIGITAL FOOTPRINT ASSESSMENT REPORT\nGenerated: {datetime.datetime.now().strftime('%Y-%m-%d')}\nRisk Index: {final_score}/100"
     st.download_button("📥 Download Official Audit Summary (.txt)", data=report_text, file_name="footprint_audit_report.txt")
-
-# MODULE 7: Incident Reporting & Helplines
+# MODULE 7: Cyber Incident Action Plan & Evidence Report Generator
 with tab7:
-    st.header("7. Incident Reporting Portal & Emergency Helplines")
+    st.header("7. Cyber Incident Action Plan & Evidence Docket Generator")
+    st.markdown("""
+    Generate an **Official Cyber Crime Triage Report & Evidence Summary** tailored to your incident. 
+    This generator produces a standardized docket that can be downloaded and submitted directly to local law enforcement or financial institutions.
+    """)
     
-    st.subheader("📞 Emergency Cyber Crime Helplines")
-    col_h1, col_h2, col_h3 = st.columns(3)
-    
-    with col_h1:
-        st.error("🚨 **National Cyber Crime**")
-        st.markdown("**Helpline:** `1930`\n\n**Portal:** `cybercrime.gov.in`")
-    with col_h2:
-        st.warning("🛡️ **Women & Child Safety**")
-        st.markdown("**Helpline:** `181` / `1091`\n\n**Coverage:** Cyberstalking & Abuse")
-    with col_h3:
-        st.info("🌐 **CERT-In Coordination**")
-        st.markdown("**Contact:** `info@cert-in.org.in`\n\n**Coverage:** Data Breaches")
-        
     st.divider()
-    st.subheader("📝 Submit Incident Report")
     
-    with st.form("incident_form"):
-        incident_type = st.selectbox("Classification:", ["Financial Fraud", "Profile Impersonation", "Cyberbullying", "Account Takeover"])
-        platform = st.selectbox("Platform:", ["WhatsApp", "Instagram", "Banking Portal", "Email"])
-        details = st.text_area("Incident Description:")
-        submit = st.form_submit_button("Submit Incident Report")
+    col_input, col_output = st.columns([1, 1])
+    
+    with col_input:
+        st.subheader("📋 Incident Details Intake")
         
-    if submit:
-        ticket_id = f"CYBER-{random.randint(100000, 999999)}"
-        st.success(f"✅ **Report Logged!** Escalation Ticket: `{ticket_id}`")
-        st.info(f"If financial fraud occurred, immediately call **1930** to freeze transferred funds.")
+        victim_name = st.text_input("Reporter / Victim Name (Optional):", placeholder="e.g. John Doe")
+        incident_type = st.selectbox(
+            "Classification of Crime:",
+            [
+                "Financial Cyber Fraud (UPI/Credit Card/NetBanking)",
+                "Social Media Account Takeover / Hacking",
+                "Cyberbullying, Harassment & Stalking",
+                "Profile Impersonation & Identity Theft",
+                "Phishing / Malicious Link Exposure"
+            ]
+        )
+        platform_affected = st.selectbox(
+            "Platform / Medium:",
+            ["WhatsApp", "Instagram", "Facebook", "UPI / Payment App", "Email / Gmail", "SMS / Phone Call", "Other Web Portal"]
+        )
+        financial_loss = st.radio("Was there any financial loss involved?", ["No", "Yes"])
+        loss_amount = 0
+        if financial_loss == "Yes":
+            loss_amount = st.number_input("Approximate Loss Amount (₹):", min_value=1, value=5000, step=500)
+            
+        incident_description = st.text_area(
+            "Detailed Incident Narrative:",
+            placeholder="Describe what happened, including dates, usernames, phone numbers, or transaction IDs involved...",
+            height=120
+        )
+        
+        generate_btn = st.button("🚀 Generate Triage Report & Evidence Docket", type="primary")
+
+    with col_output:
+        st.subheader("📄 Action Plan & Generated Deliverables")
+        
+        if generate_btn:
+            if not incident_description.strip():
+                st.warning("⚠️ Please provide a brief incident narrative before generating the report.")
+            else:
+                # Generate unique ticket reference
+                ticket_id = f"EVIDENCE-DOCKET-{random.randint(100000, 999999)}"
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                st.success(f"✅ **Docket Successfully Generated!**")
+                st.code(f"Docket Reference ID: {ticket_id}", language="text")
+                
+                # Immediate Triage Advice based on selection
+                st.markdown("### 🚨 Immediate Response Actions:")
+                if "Financial" in incident_type or financial_loss == "Yes":
+                    st.error("""
+                    **1. Call National Cyber Crime Helpline Immediately:** Dial **`1930`** (India) to initiate a bank freeze window under CFCFRMS.  
+                    **2. Notify Your Bank:** Lock your debit/credit card or UPI handle immediately via banking app.
+                    """)
+                elif "Takeover" in incident_type or "Impersonation" in incident_type:
+                    st.warning("""
+                    **1. Secure Secondary Accounts:** Change passwords for recovery emails immediately.  
+                    **2. Report Account:** Submit impersonation/hacking report via official platform links (Meta/Google).
+                    """)
+                else:
+                    st.info("""
+                    **1. Preserve Evidence:** Do not delete screenshots, chat logs, or sender headers.  
+                    **2. Block Aggressor:** Mute and block suspect profiles on affected platforms.
+                    """)
+                
+                # Format Tangible File Content
+                docket_text = f"""================================================================================
+          OFFICIAL CYBER INCIDENT TRIAGE & EVIDENCE SUMMARY DOCKET
+================================================================================
+Docket Reference ID : {ticket_id}
+Generated Timestamp : {timestamp}
+Victim Name         : {victim_name if victim_name else 'Anonymous Reporter'}
+--------------------------------------------------------------------------------
+INCIDENT CLASSIFICATION
+--------------------------------------------------------------------------------
+Crime Category      : {incident_type}
+Affected Platform   : {platform_affected}
+Financial Loss      : {'₹ ' + str(loss_amount) if financial_loss == 'Yes' else 'None Reported'}
+
+--------------------------------------------------------------------------------
+INCIDENT NARRATIVE & STATEMENTS
+--------------------------------------------------------------------------------
+{incident_description}
+
+--------------------------------------------------------------------------------
+RECOMMENDED LEGAL & INVESTIGATIVE NEXT STEPS
+--------------------------------------------------------------------------------
+1. Emergency Hotline: If financial loss occurred, call 1930 immediately with this 
+   docket and transaction IDs.
+2. Formal Filing: Upload this docket file along with transaction/chat screenshots 
+   to the National Cyber Crime Reporting Portal (cybercrime.gov.in) or submit to 
+   your nearest Cyber Crime Police Station.
+3. Evidence Handling: Retain original digital records (chat exports, email headers, 
+   bank statements) without altering files or metadata.
+================================================================================
+"""
+
+                st.markdown("### 📥 Download Output Package")
+                st.download_button(
+                    label="💾 Download Official Incident Docket (.txt)",
+                    data=docket_text,
+                    file_name=f"{ticket_id}.txt",
+                    mime="text/plain",
+                    use_container_width=True
+                )
+        else:
+            st.info("👈 Fill out the incident details on the left and click **Generate** to produce your downloadable evidence docket.")
