@@ -112,35 +112,140 @@ with tab3:
         * Private jokes or old opinions can lead to public backlash, expulsion, or job termination.
         """)
 
-# MODULE 4: REAL EXIF METADATA INSPECTOR (UPDATED)
+# --- MODULE 4: LIVE EXIF METADATA & FORENSIC INSPECTOR ---
 with tab4:
-    st.header("4. Real-Time Image EXIF Metadata Inspector")
-    st.write("Upload an image taken directly from a smartphone or camera to inspect hidden background metadata.")
-    
+    st.header("4. Live EXIF Metadata & Forensic Inspector")
+    st.caption("🔍 Inspect hidden metadata embedded in images (timestamps, camera hardware, and geolocation).")
+
     uploaded_file = st.file_uploader("Upload an Image (.jpg, .jpeg, .png)", type=["jpg", "jpeg", "png"])
-    
+
     if uploaded_file is not None:
+        from PIL import Image
+        from PIL.ExifTags import TAGS, GPSTAGS
+
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image Preview", use_container_width=True)
-        
-        exif_data = image._getexif()
-        
-        st.subheader("📸 Extracted EXIF Metadata Summary:")
-        if exif_data:
-            metadata_dict = {}
+        st.image(image, caption="Uploaded Image Preview", use_column_width=True)
+
+        # Extract EXIF data
+        exif_data = image._getexif() if hasattr(image, '_getexif') else None
+
+        if not exif_data:
+            st.warning("⚠️ No EXIF Metadata Found! This photo may have been stripped by social media (e.g. WhatsApp, Instagram) or has no embedded hardware logs.")
+        else:
+            parsed_exif = {}
+            gps_info = {}
+
+            # Translate numeric EXIF tags into human-readable names
             for tag_id, value in exif_data.items():
                 tag_name = TAGS.get(tag_id, tag_id)
-                # Filter out raw byte streams for clean viewing
-                if isinstance(value, (int, str)):
-                    metadata_dict[tag_name] = value
-                    
-            if metadata_dict:
-                st.json(metadata_dict)
-                st.warning("⚠️ **Security Risk Detected:** Metadata contains sensitive camera/device details.")
-            else:
-                st.info("No text-based metadata fields found.")
-        else:
-            st.success("✅ **Clean Image:** No EXIF metadata found. (Social media sites like WhatsApp/Instagram often auto-strip metadata during upload).")
+                if tag_name == "GPSInfo":
+                    for gps_tag_id in value:
+                        gps_tag_name = GPSTAGS.get(gps_tag_id, gps_tag_id)
+                        gps_info[gps_tag_name] = value[gps_tag_id]
+                else:
+                    parsed_exif[tag_name] = value
+
+            st.success("✅ Metadata Successfully Extracted!")
+
+            # --- KEY INFORMATION DISPLAY ---
+            col_m1, col_m2 = st.columns(2)
+
+            # 1. TIME & DATE
+            with col_m1:
+                st.subheader("📅 Timestamp Details")
+                date_taken = parsed_exif.get("DateTimeOriginal") or parsed_exif.get("DateTime") or "Not Recorded"
+                st.write(f"**Date & Time Taken:** `{date_taken}`")
+
+                camera_make = parsed_exif.get("Make", "Unknown")
+                camera_model = parsed_exif.get("Model", "Unknown")
+                st.write(f"**Device Hardware:** `{camera_make} {camera_model}`")
+                st.write(f"**Software / OS:** `{parsed_exif.get('Software', 'Standard Firmware')}`")
+
+            # 2. GEOLOCATION & LOCATION
+            with col_m2:
+                st.subheader("📍 Geolocation & Coordinates")
+                
+                def convert_to_degrees(value):
+                    """Helper function to convert GPS coordinates to decimal degrees"""
+                    try:
+                        d = float(value[0])
+                        m = float(value[1])
+                        s = float(value[2])
+                        return d + (m / 60.0) + (s / 3600.0)
+                    except Exception:
+                        return None
+
+                lat = None
+                lon = None
+                if gps_info:
+                    try:
+                        lat_val = gps_info.get("GPSLatitude")
+                        lat_ref = gps_info.get("GPSLatitudeRef", "N")
+                        lon_val = gps_info.get("GPSLongitude")
+                        lon_ref = gps_info.get("GPSLongitudeRef", "E")
+
+                        if lat_val and lon_val:
+                            lat = convert_to_degrees(lat_val)
+                            if lat_ref != "N": lat = -lat
+                            
+                            lon = convert_to_degrees(lon_val)
+                            if lon_ref != "E": lon = -lon
+                    except Exception:
+                        pass
+
+                if lat and lon:
+                    st.error("🚨 HIGH RISK: GPS Location Embedded!")
+                    st.write(f"**Latitude:** `{lat:.6f}` | **Longitude:** `{lon:.6f}`")
+                    maps_url = f"https://www.google.com/maps?q={lat},{lon}"
+                    st.markdown(f"🔗 [Open Exact Location on Google Maps]({maps_url})")
+                else:
+                    st.info("ℹ️ No GPS Coordinates embedded in this file.")
+
+            st.markdown("---")
+
+            # --- GENERATED OUTPUT REPORT ---
+            st.subheader("📄 Downloadable Metadata Evidence Report")
+            
+            import datetime as dt
+            report_text = f"""================================================================================
+                    EXIF METADATA FORENSIC INSPECTION REPORT
+================================================================================
+File Name        : {uploaded_file.name}
+Inspection Date  : {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+--------------------------------------------------------------------------------
+1. CRITICAL IMAGE TIMESTAMPS & HARDWARE
+--------------------------------------------------------------------------------
+Date Original    : {date_taken}
+Camera Device    : {camera_make} {camera_model}
+Software Used    : {parsed_exif.get('Software', 'N/A')}
+Image Size       : {image.size[0]} x {image.size[1]} pixels
+
+--------------------------------------------------------------------------------
+2. LOCATION FORENSICS (GPS)
+--------------------------------------------------------------------------------
+GPS Recorded     : {'YES - HIGH PRIVACY RISK' if (lat and lon) else 'NO GPS FOUND'}
+Latitude         : {lat if lat else 'N/A'}
+Longitude        : {lon if lon else 'N/A'}
+Google Maps Link : {f"https://www.google.com/maps?q={lat},{lon}" if (lat and lon) else 'N/A'}
+
+--------------------------------------------------------------------------------
+3. RECOMMENDED SECURITY ACTION
+--------------------------------------------------------------------------------
+{'⚠️ WARNING: This image contains exact location coordinates. Sharing this online can expose your home or routine places.' if (lat and lon) else '✅ SAFE: No GPS location found. This photo does not leak physical location data.'}
+
+================================================================================
+                        END OF FORENSIC METADATA REPORT
+================================================================================
+"""
+            st.text_area("Forensic Summary Output", value=report_text, height=250)
+
+            st.download_button(
+                label="📥 Download Metadata Inspection Report (.txt)",
+                data=report_text,
+                file_name=f"metadata_report_{uploaded_file.name}.txt",
+                mime="text/plain"
+            )
 
 # MODULE 5: Hardening Checklist
 with tab5:
