@@ -1,6 +1,6 @@
 import streamlit as st
 import re
-import datetime
+from datetime import datetime
 import random
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
