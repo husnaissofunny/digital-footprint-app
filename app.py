@@ -230,7 +230,7 @@ with tab7:
             else:
                 # Generate unique ticket reference
                 ticket_id = f"EVIDENCE-DOCKET-{random.randint(100000, 999999)}"
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
                 st.success(f"✅ **Docket Successfully Generated!**")
                 st.code(f"Docket Reference ID: {ticket_id}", language="text")
