@@ -26,7 +26,7 @@ st.caption("Interactive Cyber Range & Operational Threat Mitigation Portal")
 st.markdown("---")
 
 # Navigation Tabs (7 Comprehensive Modules)
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab 8 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "👣 1. Footprint & Permanence",
     "⚠️ 2. Threat Vector Simulator",
     "💼 3. Real-World Impact",
