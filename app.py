@@ -33,7 +33,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📸 4. Live EXIF Metadata Inspector",
     "📋 5. Hardening Checklist",
     "📊 6. Audit & Scenario Quiz",
-    "🚨 7. Action Plan & Evidence Generator"
+    "🚨 7. Action Plan & Evidence Generator",
     "🚨 8. Fake Media Takedown"
 ])
 
