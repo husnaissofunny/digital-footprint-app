@@ -26,7 +26,7 @@ st.caption("Interactive Cyber Range & Operational Threat Mitigation Portal")
 st.markdown("---")
 
 # Navigation Tabs (7 Comprehensive Modules)
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab 8 = st.tabs([
     "👣 1. Footprint & Permanence",
     "⚠️ 2. Threat Vector Simulator",
     "💼 3. Real-World Impact",
@@ -34,6 +34,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
     "📋 5. Hardening Checklist",
     "📊 6. Audit & Scenario Quiz",
     "🚨 7. Action Plan & Evidence Generator"
+    "🚨 8. Fake Media Takedown"
 ])
 
 # MODULE 1: Active vs Passive
@@ -295,3 +296,95 @@ RECOMMENDED LEGAL & INVESTIGATIVE NEXT STEPS
                 )
         else:
             st.info("👈 Fill out the incident details on the left and click **Generate** to produce your downloadable evidence docket.")
+# --- MODULE 8: FAKE MEDIA & DEEPFAKE TAKEDOWN ASSISTANT ---
+with tab8:
+    st.header("8. Fake Media & Deepfake Takedown Assistant")
+    st.caption("🔒 Direct platform routing, automated legal takedown notices, and law enforcement escalation paths.")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        content_type = st.selectbox("Type of Infringing Content", [
+            "Deepfake / AI-Generated Image or Video",
+            "Morphed / Doctored Photo",
+            "Non-Consensual Intimate Image (NCII)",
+            "Impersonation Profile / Fake Account"
+        ])
+        platform = st.selectbox("Platform Hosting Content", [
+            "Instagram / Facebook (Meta)",
+            "X (Twitter)",
+            "YouTube / Google",
+            "Telegram",
+            "Reddit",
+            "Other Website / Unknown"
+        ])
+
+    with col2:
+        target_url = st.text_input("URL of Infringing Post / Account", placeholder="https://...")
+        uploader_handle = st.text_input("Uploader Handle / Profile Name", placeholder="@username")
+
+    st.markdown("---")
+
+    # Section A: Direct Platform Actions
+    st.subheader("1. Direct Platform Reporting Routes")
+
+    if content_type == "Non-Consensual Intimate Image (NCII)":
+        st.info("💡 **Recommended Tool:** Submit a digital fingerprint to **StopNCII.org**. It hashes the image locally on your device so participating tech platforms can block re-uploads automatically without seeing the original photo.")
+
+    platform_links = {
+        "Instagram / Facebook (Meta)": "https://help.instagram.com/535503073130320",
+        "X (Twitter)": "https://help.twitter.com/forms/impersonation",
+        "YouTube / Google": "https://support.google.com/youtube/contact/privacy",
+        "Reddit": "https://www.reddit.com/report",
+        "Telegram": "Contact abuse@telegram.org or use in-app report buttons.",
+        "Other Website / Unknown": "Look for 'Contact Us', 'Abuse', or 'DMCA Takedown' in the site footer."
+    }
+
+    st.markdown(f"🔗 **Direct Portal Link:** [{platform_links.get(platform)}]({platform_links.get(platform)})")
+
+    # Section B: Automated Notice Generator
+    st.markdown("---")
+    st.subheader("2. Automated Takedown Request Notice")
+
+    if st.button("📄 Generate Legal Takedown Notice"):
+        if not target_url:
+            st.warning("Please provide the target content URL above.")
+        else:
+            import datetime as dt
+            notice_text = f"""SUBJECT: URGENT TAKEDOWN REQUEST - UNAUTHORIZED / FAKE MEDIA REMOVAL
+
+To the Trust & Safety Team at {platform},
+
+I am writing to formally request the immediate removal of unauthorized and falsified content hosted on your platform.
+
+INFRACTING CONTENT DETAILS:
+- Target URL: {target_url}
+- Uploader Handle: {uploader_handle}
+- Type of Violating Content: {content_type}
+
+LEGAL & POLICY GROUNDS:
+1. Impersonation & Right to Privacy: The content uses my likeness/identity without consent.
+2. Terms of Service Violation: This post violates platform safety policies regarding synthetic media, deepfakes, non-consensual imagery, and harassment.
+
+REMEDIAL ACTION REQUIRED:
+Please remove or disable access to the specified material within 24-48 hours to prevent further harm.
+
+Submitted On: {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+"""
+            st.success("✅ Notice Generated!")
+            st.code(notice_text, language="text")
+            st.download_button(
+                label="📥 Download Takedown Request (.txt)",
+                data=notice_text,
+                file_name=f"takedown_request_{dt.datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain"
+            )
+
+    # Section C: Law Enforcement Guidance
+    st.markdown("---")
+    st.subheader("3. Official Law Enforcement Escalation")
+    st.markdown("""
+    * **National Cybercrime Helpline:** Call **1930** immediately.
+    * **Online Complaint:** Submit a report at **[cybercrime.gov.in](https://cybercrime.gov.in)** under *Women & Children Safety* or *Cyber Crime Against Individuals*.
+    * **Forensic Evidence:** Take full-screen screenshots showing the full URL bar, profile handle, and timestamp before the post is taken down.
+    """)
