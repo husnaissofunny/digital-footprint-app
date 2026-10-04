@@ -114,14 +114,32 @@ with tab3:
 
 # --- MODULE 4: LIVE EXIF METADATA & FORENSIC INSPECTOR ---
 with tab4:
-    st.header("4. Live EXIF Metadata & Forensic Inspector")
-    st.caption("🔍 Inspect hidden metadata embedded in images (timestamps, camera hardware, and geolocation).")
+    st.header("4. Digital Footprint & EXIF Metadata Inspector")
+    st.caption("🛡️ Discover if your photos leak hidden GPS location data, device details, or timestamps to scammers.")
 
-    uploaded_file = st.file_uploader("Upload an Image (.jpg, .jpeg, .png)", type=["jpg", "jpeg", "png"])
+    # SECTION 1: AWARENESS & THREAT WARNING
+    st.subheader("⚠️ Is Your Photo Exposing You to Scammers & Stalkers?")
+    st.markdown("""
+    When you take a picture with a smartphone or digital camera, the device automatically embeds **hidden metadata (EXIF data)** inside the file. 
+
+    **If you upload or share original camera photos online, scammers and hackers can easily extract:**
+    * 📍 **Your Exact Home or Work Address:** Embedded GPS coordinates pinpoint your physical location on Google Maps.
+    * ⏰ **Your Daily Routine:** Exact timestamps show when and where you are throughout the day.
+    * 📱 **Your Phone Hardware:** Device model details enable targeted exploits and social engineering attacks.
+    """)
+
+    st.info("👇 **Test Your Image Below:** Upload a photo to see if it contains sensitive tracking data.")
+
+    # SECTION 2: INTERACTIVE INSPECTOR
+    st.markdown("---")
+    st.subheader("🔍 Check Your Image Vulnerability")
+
+    uploaded_file = st.file_uploader("Upload an Image to Scan (.jpg, .jpeg, .png)", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         from PIL import Image
         from PIL.ExifTags import TAGS, GPSTAGS
+        import datetime as dt
 
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image Preview", use_column_width=True)
@@ -130,7 +148,35 @@ with tab4:
         exif_data = image._getexif() if hasattr(image, '_getexif') else None
 
         if not exif_data:
-            st.warning("⚠️ No EXIF Metadata Found! This photo may have been stripped by social media (e.g. WhatsApp, Instagram) or has no embedded hardware logs.")
+            st.success("✅ **SAFE / SANITIZED FILE:** No EXIF Metadata Found!")
+            st.info("""
+            **Why is there no data?**
+            * This photo has already been cleaned or was processed by platforms like WhatsApp or Instagram, which automatically strip EXIF metadata for user privacy.
+            * This file is **safe to post online** because it does not leak hidden location or device data.
+            """)
+            
+            # Generate Safe Certificate Report
+            report_text = f"""================================================================================
+                EXIF METADATA PRIVACY INSPECTION REPORT
+================================================================================
+File Name        : {uploaded_file.name}
+Inspection Date  : {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Vulnerability    : LOW / SANITIZED
+
+--------------------------------------------------------------------------------
+PRIVACY STATUS: SAFE
+--------------------------------------------------------------------------------
+No hidden EXIF metadata or GPS coordinates were found in this image file.
+This image file is sanitized and safe for public posting.
+================================================================================
+"""
+            st.download_button(
+                label="📥 Download Privacy Verification Certificate (.txt)",
+                data=report_text,
+                file_name=f"privacy_verification_{uploaded_file.name}.txt",
+                mime="text/plain"
+            )
+
         else:
             parsed_exif = {}
             gps_info = {}
@@ -145,28 +191,25 @@ with tab4:
                 else:
                     parsed_exif[tag_name] = value
 
-            st.success("✅ Metadata Successfully Extracted!")
-
             # --- KEY INFORMATION DISPLAY ---
             col_m1, col_m2 = st.columns(2)
 
-            # 1. TIME & DATE
+            # 1. TIMESTAMP & DEVICE
             with col_m1:
-                st.subheader("📅 Timestamp Details")
+                st.subheader("📅 Embedded Timestamp & Device")
                 date_taken = parsed_exif.get("DateTimeOriginal") or parsed_exif.get("DateTime") or "Not Recorded"
                 st.write(f"**Date & Time Taken:** `{date_taken}`")
 
                 camera_make = parsed_exif.get("Make", "Unknown")
                 camera_model = parsed_exif.get("Model", "Unknown")
                 st.write(f"**Device Hardware:** `{camera_make} {camera_model}`")
-                st.write(f"**Software / OS:** `{parsed_exif.get('Software', 'Standard Firmware')}`")
+                st.write(f"**Firmware/Software:** `{parsed_exif.get('Software', 'Standard')}`")
 
             # 2. GEOLOCATION & LOCATION
             with col_m2:
-                st.subheader("📍 Geolocation & Coordinates")
+                st.subheader("📍 Embedded GPS Location")
                 
                 def convert_to_degrees(value):
-                    """Helper function to convert GPS coordinates to decimal degrees"""
                     try:
                         d = float(value[0])
                         m = float(value[1])
@@ -175,8 +218,7 @@ with tab4:
                     except Exception:
                         return None
 
-                lat = None
-                lon = None
+                lat, lon = None, None
                 if gps_info:
                     try:
                         lat_val = gps_info.get("GPSLatitude")
@@ -194,32 +236,32 @@ with tab4:
                         pass
 
                 if lat and lon:
-                    st.error("🚨 HIGH RISK: GPS Location Embedded!")
+                    st.error("🚨 HIGH RISK: GPS Coordinates Exposed!")
                     st.write(f"**Latitude:** `{lat:.6f}` | **Longitude:** `{lon:.6f}`")
                     maps_url = f"https://www.google.com/maps?q={lat},{lon}"
-                    st.markdown(f"🔗 [Open Exact Location on Google Maps]({maps_url})")
+                    st.markdown(f"🔗 [**Open Exact Location on Google Maps**]({maps_url})")
                 else:
-                    st.info("ℹ️ No GPS Coordinates embedded in this file.")
+                    st.warning("⚠️ MODERATE RISK: Device info found, but no exact GPS coordinates recorded.")
 
             st.markdown("---")
 
-            # --- GENERATED OUTPUT REPORT ---
-            st.subheader("📄 Downloadable Metadata Evidence Report")
+            # SECTION 3: GENERATED DELIVERABLE REPORT
+            st.subheader("📄 Downloadable Metadata Inspection Report")
             
-            import datetime as dt
             report_text = f"""================================================================================
-                    EXIF METADATA FORENSIC INSPECTION REPORT
+                EXIF METADATA PRIVACY INSPECTION REPORT
 ================================================================================
 File Name        : {uploaded_file.name}
 Inspection Date  : {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Vulnerability    : {'HIGH RISK - LOCATION EXPOSED' if (lat and lon) else 'MODERATE RISK - HARDWARE EXPOSED'}
 
 --------------------------------------------------------------------------------
-1. CRITICAL IMAGE TIMESTAMPS & HARDWARE
+1. CRITICAL IMAGE TIMESTAMPS & HARDWARE LOGS
 --------------------------------------------------------------------------------
 Date Original    : {date_taken}
 Camera Device    : {camera_make} {camera_model}
 Software Used    : {parsed_exif.get('Software', 'N/A')}
-Image Size       : {image.size[0]} x {image.size[1]} pixels
+Image Dimensions : {image.size[0]} x {image.size[1]} pixels
 
 --------------------------------------------------------------------------------
 2. LOCATION FORENSICS (GPS)
@@ -232,20 +274,59 @@ Google Maps Link : {f"https://www.google.com/maps?q={lat},{lon}" if (lat and lon
 --------------------------------------------------------------------------------
 3. RECOMMENDED SECURITY ACTION
 --------------------------------------------------------------------------------
-{'⚠️ WARNING: This image contains exact location coordinates. Sharing this online can expose your home or routine places.' if (lat and lon) else '✅ SAFE: No GPS location found. This photo does not leak physical location data.'}
+{'⚠️ WARNING: This photo contains exact location coordinates. Sharing this file directly via email, cloud links, or messaging can expose your exact physical location to scammers.' if (lat and lon) else '⚠️️ NOTICE: Device info is exposed. Strip metadata before sharing original files.'}
 
 ================================================================================
                         END OF FORENSIC METADATA REPORT
 ================================================================================
 """
-            st.text_area("Forensic Summary Output", value=report_text, height=250)
+            st.text_area("Forensic Summary Output", value=report_text, height=220)
 
             st.download_button(
-                label="📥 Download Metadata Inspection Report (.txt)",
+                label="📥 Download Metadata Vulnerability Report (.txt)",
                 data=report_text,
                 file_name=f"metadata_report_{uploaded_file.name}.txt",
                 mime="text/plain"
             )
+
+    # SECTION 4: STEP-BY-STEP REMOVAL GUIDE
+    st.markdown("---")
+    st.subheader("🛠️ How to Remove & Clean Metadata From Your Images")
+    st.write("Follow these steps to scrub hidden metadata so you can post your photos safely:")
+
+    with st.expander("📱 iPhone / iPad (iOS)"):
+        st.markdown("""
+        * **When Sharing:** Tap the photo $\rightarrow$ tap **Share** $\rightarrow$ tap **Options** at the top $\rightarrow$ toggle **Location OFF**.
+        * **Remove from Device:** Open the photo $\rightarrow$ swipe up (or tap **ℹ️ Info**) $\rightarrow$ tap **Adjust** under the map $\rightarrow$ select **No Location**.
+        """)
+
+    with st.expander("🤖 Android Phones"):
+        st.markdown("""
+        * **Prevent Future Photos:** Open **Camera App** $\rightarrow$ tap **Settings (Gear Icon)** $\rightarrow$ turn **Location Tags / Save Location OFF**.
+        * **Remove Existing Location:** Open **Google Photos** or **Gallery** $\rightarrow$ select photo $\rightarrow$ swipe up $\rightarrow$ tap **Remove Location** before sharing.
+        """)
+
+    with st.expander("💻 Windows PC"):
+        st.markdown("""
+        1. Right-click the photo file and select **Properties**.
+        2. Click the **Details** tab at the top.
+        3. At the bottom, click **"Remove Properties and Personal Information"**.
+        4. Select **"Create a copy with all possible properties removed"** and click **OK**.
+        """)
+
+    with st.expander("🍎 Mac (macOS)"):
+        st.markdown("""
+        1. Open the photo in **Preview**.
+        2. Press `Cmd + I` to open the Inspector window.
+        3. Click the **`i` (Information)** tab, then select the **GPS** tab.
+        4. Click **"Remove Location"**.
+        """)
+
+    with st.expander("💡 Quickest Workaround (The Screenshot Trick)"):
+        st.markdown("""
+        Open the image on your phone or laptop screen and **take a screenshot**. The screenshot creates a brand-new image file that contains **zero camera, GPS, or hardware metadata**.
+        """)
+
 
 # MODULE 5: Hardening Checklist
 with tab5:
