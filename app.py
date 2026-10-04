@@ -26,7 +26,7 @@ st.caption("Interactive Cyber Range & Operational Threat Mitigation Portal")
 st.markdown("---")
 
 # Navigation Tabs (7 Comprehensive Modules)
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
     "👣 1. Footprint & Permanence",
     "⚠️ 2. Threat Vector Simulator",
     "💼 3. Real-World Impact",
@@ -34,7 +34,8 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📋 5. Hardening Checklist",
     "📊 6. Audit & Scenario Quiz",
     "🚨 7. Action Plan & Evidence Generator",
-    "🚨 8. Fake Media Takedown"
+    "🚨 8. Fake Media Takedown",
+    "📋 9. Emergency Directory & Complaint Dossier Generator"
 ])
 
 # MODULE 1: Active vs Passive
@@ -388,3 +389,132 @@ Submitted On: {dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     * **Online Complaint:** Submit a report at **[cybercrime.gov.in](https://cybercrime.gov.in)** under *Women & Children Safety* or *Cyber Crime Against Individuals*.
     * **Forensic Evidence:** Take full-screen screenshots showing the full URL bar, profile handle, and timestamp before the post is taken down.
     """)
+    # --- MODULE 9: EMERGENCY DIRECTORY & COMPLAINT DOSSIER GENERATOR ---
+with tab9:
+    st.header("9. Cyber Emergency Helplines & Formal Dossier Generator")
+    st.caption("🚨 Access emergency helplines and generate a formal, print-ready Police & Bank Complaint Dossier.")
+
+    # SECTION 1: EMERGENCY DIRECTORY
+    st.subheader("⚡ Official Emergency Directory (India)")
+    col_h1, col_h2, col_h3 = st.columns(3)
+    col_h1.metric("National Cyber Crime", "1930", "24x7 Toll-Free")
+    col_h2.metric("Emergency Response", "112", "Police / Medical")
+    col_h3.metric("Women Helpline", "1091", "24x7 Support")
+
+    with st.expander("🌐 Direct Links to Official Government Portals"):
+        st.markdown("""
+        * **National Cybercrime Reporting Portal:** [cybercrime.gov.in](https://cybercrime.gov.in) *(Official FIR & Complaint Filing)*
+        * **Block Stolen Mobile (CEIR):** [ceir.gov.in](https://ceir.gov.in) *(Block phone handset IMEI across India)*
+        * **Check Fake Mobile Connections (TAFCOP):** [sancharsaathi.gov.in](https://sancharsaathi.gov.in) *(See all SIM cards under your name)*
+        * **RBI Financial Fraud Portal:** [sachet.rbi.org.in](https://sachet.rbi.org.in) *(Report illegal financial schemes)*
+        """)
+
+    st.markdown("---")
+
+    # SECTION 2: FORMAL DOSSIER GENERATOR
+    st.subheader("📄 Generate Ready-to-Submit Complaint Dossier")
+    st.info("💡 Fill in the details below to instantly generate a formal complaint letter ready to be printed or submitted on cybercrime.gov.in.")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        victim_name = st.text_input("Full Name of Complainant", placeholder="e.g. Rahul Sharma")
+        victim_contact = st.text_input("Phone Number / Email", placeholder="e.g. 9876543210 / rahul@email.com")
+        victim_address = st.text_input("City / District", placeholder="e.g. Mumbai, Maharashtra")
+    with col2:
+        crime_category = st.selectbox("Category of Incident", [
+            "Financial Fraud / UPI Scam / OTP Theft",
+            "Impersonation / Fake Social Media Account",
+            "Deepfake / Morphed Photo Harassment",
+            "Job Scam / Online Task Fraud",
+            "Unauthorized Account Hacking"
+        ])
+        amount_lost = st.number_input("Financial Loss Amount (₹)", min_value=0, step=500, value=15000)
+        time_frame = st.selectbox("Time Elapsed Since Incident", [
+            "Under 2 Hours (Within RBI Golden Hour)",
+            "Within 24 Hours",
+            "1 to 3 Days",
+            "More than 3 Days"
+        ])
+
+    st.subheader("Detail Key Evidence")
+    evidence_details = st.text_area(
+        "Enter Transaction IDs, Phone Numbers, Profile URLs, or Suspicious Links:",
+        placeholder="e.g. Sent ₹15,000 via UPI ID scammer@upi at 14:30. Suspect WhatsApp Number: +91-99999XXXXX. UTR Number: 4291XXXXXX."
+    )
+
+    if st.button("🚀 Generate Formal Complaint Dossier", type="primary"):
+        if not victim_name or not evidence_details:
+            st.error("Please enter your name and evidence details to generate the dossier.")
+        else:
+            import datetime as dt
+            
+            # Auto-calculate risk & golden hour status
+            golden_hour = "ACTIVE (Eligible for 100% Bank Liability Reimbursement under RBI Rules)" if "Under 2 Hours" in time_frame else "EXPIRED (Immediate Bank Freeze Still Required)"
+            dossier_code = f"DOSSIER-{dt.datetime.now().strftime('%Y%m%d')}-{hash(victim_name) % 10000:04d}"
+
+            # Create the Formal Legal Text Document
+            dossier_text = f"""================================================================================
+          FORMAL CYBER CRIME COMPLAINT DOSSIER & EVIDENCE PACKET
+================================================================================
+Dossier Reference ID : {dossier_code}
+Date & Time Generated : {dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Generated Via         : Cyber Range & Threat Mitigation Portal
+
+--------------------------------------------------------------------------------
+1. COMPLAINANT IDENTIFICATION
+--------------------------------------------------------------------------------
+Full Name            : {victim_name}
+Contact Information  : {victim_contact}
+Location / District  : {victim_address}
+
+--------------------------------------------------------------------------------
+2. INCIDENT SUMMARY & CLASSIFICATION
+--------------------------------------------------------------------------------
+Category of Crime    : {crime_category}
+Financial Loss       : ₹{amount_lost:,.2f}
+Time Frame           : {time_frame}
+RBI Golden Hour      : {golden_hour}
+
+--------------------------------------------------------------------------------
+3. STATEMENT OF FACTS & EVIDENCE LOG
+--------------------------------------------------------------------------------
+{evidence_details}
+
+--------------------------------------------------------------------------------
+4. APPLICABLE LEGAL SECTIONS (INDIAN CYBER LAW)
+--------------------------------------------------------------------------------
+- Section 66D, Information Technology Act, 2000 (Cheating by Personation using Computer Resource)
+- Section 66C, Information Technology Act, 2000 (Identity Theft & Credential Abuse)
+- Section 420, Indian Penal Code / Sec 318 BNS (Cheating and Dishonestly Inducing Delivery of Property)
+- RBI Master Circular DBR.No.Leg.BC.78/09.07.005/2017-18 (Limiting Liability of Customers in Unauthorized Electronic Banking Transactions)
+
+--------------------------------------------------------------------------------
+5. FORMAL PRAYER / REQUEST TO POLICE & BANK AUTHORITIES
+--------------------------------------------------------------------------------
+1. To Cyber Police: Please register an official FIR/Complaint under the aforementioned sections and initiate tracing of the involved account/phone numbers.
+2. To Bank Nodal Officer: Kindly initiate an immediate debit freeze/lien on the beneficiary accounts associated with the reported UTR/Transaction IDs.
+
+================================================================================
+                       END OF COMPLAINT DOSSIER
+================================================================================
+"""
+
+            st.success("✅ Formal Dossier Generated Successfully!")
+            
+            # Show Metrics
+            m1, m2 = st.columns(2)
+            m1.metric("Dossier Tracking ID", dossier_code)
+            m2.metric("RBI Golden Hour Status", "ACTIVE" if "Under 2 Hours" in time_frame else "INACTIVE")
+
+            # Output Text Preview
+            st.subheader("📋 Output Preview")
+            st.text_area("Official Complaint Letter Output", value=dossier_text, height=300)
+
+            # Download File Deliverable
+            st.download_button(
+                label="📥 Download Official Complaint File (.txt)",
+                data=dossier_text,
+                file_name=f"{dossier_code}.txt",
+                mime="text/plain"
+            )
+
